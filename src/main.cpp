@@ -99,7 +99,7 @@ class $modify(TableViewMouseScroll, TableView)
 
 	void ForceScrollUpdate(float dt)
 	{
-		bool CurrentStagedInput = isMiddleClickPressed();
+		bool CurrentStagedInput = Mouse::isMiddleClickPressed();
 		auto mousePos = getMousePos();
 		if (CurrentStagedInput == m_fields->currentInput)
 			goto Updated;
@@ -197,7 +197,7 @@ class $modify(ScrollLayerMouseScroll, CCScrollLayerExt)
 
 	void ForceScrollUpdate(float dt)
 	{
-		bool CurrentStagedInput = isMiddleClickPressed();
+		bool CurrentStagedInput = Mouse::isMiddleClickPressed();
 		auto mousePos = getMousePos();
 		if (CurrentStagedInput == m_fields->currentInput)
 			goto Updated;
