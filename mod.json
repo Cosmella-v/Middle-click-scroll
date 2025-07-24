@@ -1,0 +1,14 @@
+{
+	"geode": "4.6.2",
+	"gd": {
+		"win": "2.2074",
+		"android": "2.2074",
+		"mac": "2.2074",
+		"ios": "2.2074"
+	},
+	"id": "viper.middleclickscroll",
+	"name": "Middle click scroll",
+	"version": "v1.0.0",
+	"developer": "Viper",
+	"description": "Ever had a broken scrollwheel and liked how chrome's middle click scroll worked, this mod is for you!"
+}
