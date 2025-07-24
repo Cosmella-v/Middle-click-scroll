@@ -1,60 +1,10 @@
 #include <Geode/Geode.hpp>
 #include <Geode/modify/TableView.hpp>
 #include <Geode/modify/CCScrollLayerExt.hpp>
-#include "middleClick.hpp"
+#include "Mouse.hpp"
 
-#ifdef GEODE_IS_WINDOWS
-#include <windows.h>
-#endif
-
+Mouse* UserMouse = Mouse::get();
 using namespace geode::prelude;
-
-#ifdef GEODE_IS_WINDOWS
-
-enum Direction
-{
-	NONE,
-	UP,
-	DOWN,
-	LEFT,
-	RIGHT
-};
-
-void setCursorForDirection(Direction dir)
-{
-	HCURSOR cursor = NULL;
-
-	switch (dir)
-	{
-	case UP:
-		cursor = LoadCursor(NULL, MAKEINTRESOURCE(32655));
-		break;
-	case DOWN:
-		cursor = LoadCursor(NULL, MAKEINTRESOURCE(32656));
-		break;
-	case RIGHT:
-		cursor = LoadCursor(NULL, MAKEINTRESOURCE(32657));
-		break;
-	case LEFT:
-		cursor = LoadCursor(NULL, MAKEINTRESOURCE(32658));
-		break;
-	case NONE:
-	default:
-		cursor = LoadCursor(NULL, MAKEINTRESOURCE(32654));
-		break;
-	}
-
-	if (cursor)
-	{
-		SetCursor(cursor);
-	}
-}
-
-void resetCursor()
-{
-	SetCursor(LoadCursor(NULL, IDC_ARROW));
-}
-#endif
 
 float scrollSpeedFactor = 0.1f;
 float maxSpeed = 50.0f;
@@ -70,22 +20,16 @@ class $modify(TableViewMouseScroll, TableView)
 		CCPoint scrollVelocity;
 		bool currentInput = false;
 	};
-#ifdef GEODE_IS_WINDOWS
 	void OnExit()
 	{
-		resetCursor();
+		UserMouse->resetCursor();
 		return TableView::onExit();
 	};
-#endif
 	void registerWithTouchDispatcher()
 	{
-		if (m_fields->m_Scheduled == false)
+		if (m_unused2)
 		{
-			m_fields->m_Scheduled = true;
-			if (m_unused2)
-			{
-				this->schedule(schedule_selector(TableViewMouseScroll::ForceScrollUpdate));
-			}
+			this->schedule(schedule_selector(TableViewMouseScroll::ForceScrollUpdate));
 		}
 		return TableView::registerWithTouchDispatcher(); // HOLY SHIT A ALMOST INIT FUNCTION!
 	}
@@ -99,7 +43,7 @@ class $modify(TableViewMouseScroll, TableView)
 
 	void ForceScrollUpdate(float dt)
 	{
-		bool CurrentStagedInput = Mouse::isMiddleClickPressed();
+		bool CurrentStagedInput = UserMouse->isMiddleClickPressed();
 		auto mousePos = getMousePos();
 		if (CurrentStagedInput == m_fields->currentInput)
 			goto Updated;
@@ -119,9 +63,7 @@ class $modify(TableViewMouseScroll, TableView)
 			{
 				m_fields->m_movement = false;
 				m_fields->isScrolling = false;
-#ifdef GEODE_IS_WINDOWS
-				resetCursor();
-#endif
+				UserMouse->resetCursor();
 			}
 		}
 		goto Updated;
@@ -136,28 +78,22 @@ class $modify(TableViewMouseScroll, TableView)
 			m_fields->scrollVelocity.x = std::clamp(m_fields->scrollVelocity.x, -maxSpeed, maxSpeed);
 			m_fields->scrollVelocity.y = std::clamp(m_fields->scrollVelocity.y, -maxSpeed, maxSpeed);
 			m_fields->m_movement = m_fields->scrollVelocity.y != 0 || m_fields->scrollVelocity.x != 0;
-#ifdef GEODE_IS_WINDOWS
-			// windows only supports the mouse icon thing since i have no idea who didn't care lol, i didn't care enough to make some lol
+
 			if (m_fields->m_movement)
 			{
 				if (m_fields->scrollVelocity.y > 0)
 				{
-					setCursorForDirection(DOWN);
+					UserMouse->setCursorForDirection(MouseDrag::DOWN);
 				}
 				else if (m_fields->scrollVelocity.y < 0)
 				{
-					setCursorForDirection(UP);
-				} /*else if ((m_fields->scrollVelocity.x > 0)) {
-					setCursorForDirection(RIGHT);
-				} else {
-					setCursorForDirection(LEFT);
-				};*/
+					UserMouse->setCursorForDirection(MouseDrag::UP);
+				}
 			}
 			else
 			{
-				setCursorForDirection(NONE);
+				UserMouse->setCursorForDirection(MouseDrag::NONE);
 			};
-#endif
 			scrollWheel(m_fields->scrollVelocity.y, m_fields->scrollVelocity.x);
 		};
 		return;
@@ -177,14 +113,7 @@ class $modify(ScrollLayerMouseScroll, CCScrollLayerExt)
 	};
 	void registerWithTouchDispatcher()
 	{
-		if (m_fields->m_Scheduled == false)
-		{
-			m_fields->m_Scheduled = true;
-			if (!m_disableMovement)
-			{
-				this->schedule(schedule_selector(ScrollLayerMouseScroll::ForceScrollUpdate));
-			}
-		}
+		this->schedule(schedule_selector(ScrollLayerMouseScroll::ForceScrollUpdate));
 		return CCScrollLayerExt::registerWithTouchDispatcher(); // HOLY SHIT A ALMOST INIT FUNCTION!
 	}
 	bool PositionOverlap(CCPoint Provided)
@@ -197,7 +126,8 @@ class $modify(ScrollLayerMouseScroll, CCScrollLayerExt)
 
 	void ForceScrollUpdate(float dt)
 	{
-		bool CurrentStagedInput = Mouse::isMiddleClickPressed();
+		if (m_disableMovement) return;
+		bool CurrentStagedInput = UserMouse->isMiddleClickPressed();
 		auto mousePos = getMousePos();
 		if (CurrentStagedInput == m_fields->currentInput)
 			goto Updated;
@@ -217,9 +147,7 @@ class $modify(ScrollLayerMouseScroll, CCScrollLayerExt)
 			{
 				m_fields->m_movement = false;
 				m_fields->isScrolling = false;
-#ifdef GEODE_IS_WINDOWS
-				resetCursor();
-#endif
+				UserMouse->resetCursor();
 			}
 		}
 		goto Updated;
@@ -234,31 +162,28 @@ class $modify(ScrollLayerMouseScroll, CCScrollLayerExt)
 			m_fields->scrollVelocity.x = std::clamp(m_fields->scrollVelocity.x, -maxSpeed, maxSpeed);
 			m_fields->scrollVelocity.y = std::clamp(m_fields->scrollVelocity.y, -maxSpeed, maxSpeed);
 			m_fields->m_movement = m_fields->scrollVelocity.y != 0 || m_fields->scrollVelocity.x != 0;
-#ifdef GEODE_IS_WINDOWS
-			// windows only supports the mouse icon thing since i have no idea who didn't care lol, i didn't care enough to make some lol
 			if (m_fields->m_movement)
 			{
 				if (m_disableVertical)
 				{
-					setCursorForDirection(NONE);
+					UserMouse->setCursorForDirection(MouseDrag::NONE);
 				}
 				else
 				{
 					if (m_fields->scrollVelocity.y > 0)
 					{
-						setCursorForDirection(DOWN);
+						UserMouse->setCursorForDirection(MouseDrag::DOWN);
 					}
 					else if (m_fields->scrollVelocity.y < 0)
 					{
-						setCursorForDirection(UP);
+						UserMouse->setCursorForDirection(MouseDrag::UP);
 					}
 				}
 			}
 			else
 			{
-				setCursorForDirection(NONE);
+				UserMouse->setCursorForDirection(MouseDrag::NONE);
 			};
-#endif
 			scrollLayer(m_fields->scrollVelocity.y);
 		};
 		return;
