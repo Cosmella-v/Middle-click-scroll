@@ -3,7 +3,7 @@
 #include <windows.h>
 #else
 #ifdef GEODE_IS_MACOS
-#include <ApplicationServices/ApplicationServices.h>
+#include <CoreGraphics/CGEventSource.h>
 #endif
 #endif
 
