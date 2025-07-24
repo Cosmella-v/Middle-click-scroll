@@ -1,15 +1,11 @@
-
-#ifdef GEODE_IS_WINDOWS
-#include <windows.h>
-#else
-#ifdef GEODE_IS_MACOS
-#include <ApplicationServices/ApplicationServices.h>
-#endif
-#endif
-
 #include <Geode/Geode.hpp>
 #include <Geode/modify/TableView.hpp>
 #include <Geode/modify/CCScrollLayerExt.hpp>
+#include "middleClick.hpp"
+
+#ifdef GEODE_IS_WINDOWS
+#include <windows.h>
+#endif
 
 using namespace geode::prelude;
 
@@ -59,19 +55,6 @@ void resetCursor()
 	SetCursor(LoadCursor(NULL, IDC_ARROW));
 }
 #endif
-
-bool isMiddleClickPressed()
-{
-#ifdef GEODE_IS_WINDOWS
-	return (GetAsyncKeyState(VK_MBUTTON) & 0x8000);
-#else
-#ifdef GEODE_IS_MACOS
-	return CGEventSourceButtonState(kCGEventSourceStateHIDSystemState, kCGMouseButtonCenter);
-#else
-	return false;
-#endif
-#endif
-}
 
 float scrollSpeedFactor = 0.1f;
 float maxSpeed = 50.0f;
