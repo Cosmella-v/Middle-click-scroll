@@ -1,6 +1,3 @@
-#include <Geode/Geode.hpp>
-#include <Geode/modify/TableView.hpp>
-#include <Geode/modify/CCScrollLayerExt.hpp>
 
 #ifdef GEODE_IS_WINDOWS
 #include <windows.h>
@@ -9,6 +6,10 @@
 #include <ApplicationServices/ApplicationServices.h>
 #endif
 #endif
+
+#include <Geode/Geode.hpp>
+#include <Geode/modify/TableView.hpp>
+#include <Geode/modify/CCScrollLayerExt.hpp>
 
 using namespace geode::prelude;
 
