@@ -9,7 +9,7 @@ void Mouse::mmsetCursor(void* cursorPtr) {
     NSCursor* cursor = reinterpret_cast<NSCursor*>(cursorPtr);
     [cursor set];
 }
-void* Mouse::mmDefaultCursor(MouseDrag dir) {
+void* Mouse::mmDefaultCursor() {
     NSCursor* cursor = [NSCursor arrowCursor];
     return reinterpret_cast<void*>(cursor);
 }
