@@ -31,7 +31,7 @@ void* Mouse::mmloadCursor(const std::string& imagePath32, const std::string& ima
     }
 
 
-    NSImage* combinedImage = [[NSImage alloc] initWithSize:image64.size];
+    NSImage* combinedImage = [[NSImage alloc] initWithSize:image32.size];
 
     for (NSImageRep* rep in [image32 representations]) {
         [combinedImage addRepresentation:rep];
