@@ -8,8 +8,45 @@
 	},
 	"id": "viper.middleclickscroll",
 	"name": "Middle click scroll",
-	"version": "v1.0.0",
+	"version": "v1.0.1",
 	"links": {"source": "https://github.com/Cosmella-v/Middle-click-scroll"},
 	"developer": "Viper",
-	"description": "Ever had a broken scrollwheel and liked how chrome's middle click scroll worked, this mod is for you!"
+	"resources": {"files": ["MacCursors/*.png"]},
+	"description": "Ever had a broken scrollwheel and liked how chrome's middle click scroll worked, this mod is for you!",
+	"settings": {
+		"scroll-speed-mult": {
+			"type": "float",
+			"name": "Scroll Speed Multiplier",
+			"description": "How much speed is added for distance from start point",
+			"default": 0.1,
+			"min": 0.1,
+			"max": 5,
+			"controls": {
+				"arrows": true,
+				"arrow-step": 0.1,
+				"big-arrows": false,
+				"big-arrow-step": 0.5,
+				"slider": true,
+				"slider-step": 0.1,
+				"input": true
+			}
+		},
+		"max-scroll-speed": {
+			"type": "float",
+			"name": "Maximum Scroll Speed",
+			"description": "The max scroll speed it can be",
+			"default": 50,
+			"min": 0.1,
+			"max": 300,
+			"controls": {
+				"arrows": true,
+				"arrow-step": 1,
+				"big-arrows": false,
+				"big-arrow-step": 2,
+				"slider": true,
+				"slider-step": 0.1,
+				"input": true
+			}
+		}
+	}
 }

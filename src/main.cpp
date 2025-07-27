@@ -3,189 +3,117 @@
 #include <Geode/modify/CCScrollLayerExt.hpp>
 #include "Mouse.hpp"
 
-Mouse* UserMouse = Mouse::get();
 using namespace geode::prelude;
 
-float scrollSpeedFactor = 0.1f;
-float maxSpeed = 50.0f;
+Mouse* UserMouse = Mouse::get();
 
-class $modify(TableViewMouseScroll, TableView)
-{
-	struct Fields
-	{
-		bool isScrolling = false;
-		bool m_movement = false;
-		bool m_Scheduled = false;
-		CCPoint initialClickPos;
-		CCPoint scrollVelocity;
-		bool currentInput = false;
-	};
-	void OnExit()
-	{
-		UserMouse->resetCursor();
-		return TableView::onExit();
-	};
-	void registerWithTouchDispatcher()
-	{
-		if (m_unused2)
-		{
-			this->schedule(schedule_selector(TableViewMouseScroll::ForceScrollUpdate));
-		}
-		return TableView::registerWithTouchDispatcher(); // HOLY SHIT A ALMOST INIT FUNCTION!
-	}
-	bool PositionOverlap(CCPoint Provided)
-	{
-		CCNode *Parent = this->getParent();
+// both classes use this :troll:
+template <typename Derived, typename Base>
+struct MouseScrollClass : Modify<Derived, Base> {
+    struct Fields {
+        bool m_scrolling = false;
+        bool m_movement = false;
+        CCPoint m_clickPos;
+        CCPoint m_velocity;
+        bool m_currentInput = false;
+    };
+
+    void forceScrollUpdate(float) {
+		if (!UserMouse->m_windowActive) {
+			this->m_fields->m_scrolling = false;
+			return;
+		}; // no scrolling when tabbed out
+
+        if constexpr (requires { this->m_disableMovement; }) {
+            if (this->m_disableMovement) return;
+        }
+
+        bool MiddleClickInput = UserMouse->isMiddleClickPressed();
+        CCPoint mousePos = getMousePos();
+
+        if (MiddleClickInput != this->m_fields->m_currentInput) {
+            this->m_fields->m_currentInput = MiddleClickInput;
+
+            if (MiddleClickInput || this->m_fields->m_movement) {
+                if (!this->m_fields->m_scrolling) {
+                    if (!positionOverlaps(mousePos)) return;
+
+                    this->m_fields->m_scrolling = true;
+                    this->m_fields->m_clickPos = mousePos;
+                    this->m_fields->m_velocity = CCPointZero;
+                } else {
+                    this->m_fields->m_movement = false;
+                    this->m_fields->m_scrolling = false;
+                    UserMouse->resetCursor();
+                }
+            }
+        }
+
+        if (this->m_fields->m_scrolling) {
+            CCPoint offset = ccpSub(this->m_fields->m_clickPos, mousePos);
+            this->m_fields->m_velocity = ccpMult(offset, UserMouse->m_scrollSpeedFactor);
+
+            CCPoint vel = this->m_fields->m_velocity;
+            vel.x = geode::utils::clamp(vel.x, -UserMouse->m_maxSpeed, UserMouse->m_maxSpeed);
+            vel.y = geode::utils::clamp(vel.y, -UserMouse->m_maxSpeed, UserMouse->m_maxSpeed);
+            this->m_fields->m_movement =  vel.y != 0;
+
+            if (this->m_fields->m_movement) {
+                if constexpr (requires { this->m_disableVertical; }) {
+                    if (this->m_disableVertical) {
+                        UserMouse->setCursorForDirection(MouseDrag::ALL);
+                    } else {
+                        UserMouse->setCursorForDirection(vel.y > 0 ? MouseDrag::DOWN :
+                                                          vel.y < 0 ? MouseDrag::UP :
+                                                                      MouseDrag::ALL);
+                    }
+                } else {
+                    UserMouse->setCursorForDirection(vel.y > 0 ? MouseDrag::DOWN :
+                                                      vel.y < 0 ? MouseDrag::UP :
+                                                                  MouseDrag::ALL);
+                }
+            } else {
+                UserMouse->setCursorForDirection(MouseDrag::ALL);
+            }
+
+            if constexpr (std::is_base_of_v<TableView, Base>) {
+                this->scrollWheel(vel.y, vel.x);
+            } else if constexpr (std::is_base_of_v<CCScrollLayerExt, Base>) {
+                this->scrollLayer(vel.y);
+            }
+        }
+    }
+
+    void registerWheel() {
+        this->schedule(schedule_selector(Derived::forceScrollUpdate));
+    }
+
+    bool positionOverlaps(CCPoint Provided) {
+        CCNode *Parent = this->getParent();
 		if (Parent == nullptr)
 			Parent = this;
 		return this->boundingBox().containsPoint(Parent->convertToNodeSpace(Provided));
-	}
+    }
+	
+};
 
-	void ForceScrollUpdate(float dt)
+struct ScrollLayerMouseScroll : MouseScrollClass<ScrollLayerMouseScroll, CCScrollLayerExt> {
+    using MouseScrollClass::MouseScrollClass;
+	void registerWithTouchDispatcher() // it's inlined and hates me
 	{
-		bool CurrentStagedInput = UserMouse->isMiddleClickPressed();
-		auto mousePos = getMousePos();
-		if (CurrentStagedInput == m_fields->currentInput)
-			goto Updated;
-		m_fields->currentInput = CurrentStagedInput;
-
-		if (CurrentStagedInput || m_fields->m_movement)
-		{
-			if (!m_fields->isScrolling)
-			{
-				if (!PositionOverlap(mousePos))
-					return;
-				m_fields->isScrolling = true;
-				m_fields->initialClickPos = mousePos;
-				m_fields->scrollVelocity = CCPointZero;
-			}
-			else
-			{
-				m_fields->m_movement = false;
-				m_fields->isScrolling = false;
-				UserMouse->resetCursor();
-			}
-		}
-		goto Updated;
-	Updated:
-		if (m_fields->isScrolling)
-		{
-
-			CCPoint offset = ccpSub(m_fields->initialClickPos, mousePos);
-			m_fields->scrollVelocity = ccpMult(offset, scrollSpeedFactor);
-
-			// Clamp
-			m_fields->scrollVelocity.x = std::clamp(m_fields->scrollVelocity.x, -maxSpeed, maxSpeed);
-			m_fields->scrollVelocity.y = std::clamp(m_fields->scrollVelocity.y, -maxSpeed, maxSpeed);
-			m_fields->m_movement = m_fields->scrollVelocity.y != 0 || m_fields->scrollVelocity.x != 0;
-
-			if (m_fields->m_movement)
-			{
-				if (m_fields->scrollVelocity.y > 0)
-				{
-					UserMouse->setCursorForDirection(MouseDrag::DOWN);
-				}
-				else if (m_fields->scrollVelocity.y < 0)
-				{
-					UserMouse->setCursorForDirection(MouseDrag::UP);
-				}
-			}
-			else
-			{
-				UserMouse->setCursorForDirection(MouseDrag::NONE);
-			};
-			scrollWheel(m_fields->scrollVelocity.y, m_fields->scrollVelocity.x);
-		};
-		return;
+		registerWheel();
+		return CCScrollLayerExt::registerWithTouchDispatcher();
 	}
 };
 
-class $modify(ScrollLayerMouseScroll, CCScrollLayerExt)
-{
-	struct Fields
+struct TableViewMouseScroll : MouseScrollClass<TableViewMouseScroll, TableView> {
+	void registerWithTouchDispatcher() // it's inlined and hates me
 	{
-		bool isScrolling = false;
-		bool m_movement = false;
-		bool m_Scheduled = false;
-		CCPoint initialClickPos;
-		CCPoint scrollVelocity;
-		bool currentInput = false;
-	};
-	void registerWithTouchDispatcher()
-	{
-		this->schedule(schedule_selector(ScrollLayerMouseScroll::ForceScrollUpdate));
-		return CCScrollLayerExt::registerWithTouchDispatcher(); // HOLY SHIT A ALMOST INIT FUNCTION!
-	}
-	bool PositionOverlap(CCPoint Provided)
-	{
-		CCNode *Parent = this->getParent();
-		if (Parent == nullptr)
-			Parent = this;
-		return this->boundingBox().containsPoint(Parent->convertToNodeSpace(Provided));
-	}
-
-	void ForceScrollUpdate(float dt)
-	{
-		if (m_disableMovement) return;
-		bool CurrentStagedInput = UserMouse->isMiddleClickPressed();
-		auto mousePos = getMousePos();
-		if (CurrentStagedInput == m_fields->currentInput)
-			goto Updated;
-		m_fields->currentInput = CurrentStagedInput;
-
-		if (CurrentStagedInput || m_fields->m_movement)
+		if (m_unused2)
 		{
-			if (!m_fields->isScrolling)
-			{
-				if (!PositionOverlap(mousePos))
-					return;
-				m_fields->isScrolling = true;
-				m_fields->initialClickPos = mousePos;
-				m_fields->scrollVelocity = CCPointZero;
-			}
-			else
-			{
-				m_fields->m_movement = false;
-				m_fields->isScrolling = false;
-				UserMouse->resetCursor();
-			}
+			registerWheel();
 		}
-		goto Updated;
-	Updated:
-		if (m_fields->isScrolling)
-		{
-
-			CCPoint offset = ccpSub(m_fields->initialClickPos, mousePos);
-			m_fields->scrollVelocity = ccpMult(offset, scrollSpeedFactor);
-
-			// Clamp
-			m_fields->scrollVelocity.x = std::clamp(m_fields->scrollVelocity.x, -maxSpeed, maxSpeed);
-			m_fields->scrollVelocity.y = std::clamp(m_fields->scrollVelocity.y, -maxSpeed, maxSpeed);
-			m_fields->m_movement = m_fields->scrollVelocity.y != 0 || m_fields->scrollVelocity.x != 0;
-			if (m_fields->m_movement)
-			{
-				if (m_disableVertical)
-				{
-					UserMouse->setCursorForDirection(MouseDrag::NONE);
-				}
-				else
-				{
-					if (m_fields->scrollVelocity.y > 0)
-					{
-						UserMouse->setCursorForDirection(MouseDrag::DOWN);
-					}
-					else if (m_fields->scrollVelocity.y < 0)
-					{
-						UserMouse->setCursorForDirection(MouseDrag::UP);
-					}
-				}
-			}
-			else
-			{
-				UserMouse->setCursorForDirection(MouseDrag::NONE);
-			};
-			scrollLayer(m_fields->scrollVelocity.y);
-		};
-		return;
+		return TableView::registerWithTouchDispatcher(); 
 	}
+    using MouseScrollClass::MouseScrollClass;
 };
