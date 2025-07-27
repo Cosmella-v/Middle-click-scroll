@@ -24,7 +24,7 @@ add_library(${PROJECT_NAME} SHARED ${SOURCES})
 
 if(APPLE)
     find_library(COCOA_LIBRARY Cocoa REQUIRED)
-    target_link_libraries(${PROJECT_NAME} PRIVATE ${COCOA_LIBRARY})
+    target_link_libraries(${PROJECT_NAME} ${COCOA_LIBRARY})
 endif()
 
 if (NOT DEFINED ENV{GEODE_SDK})
