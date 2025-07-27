@@ -1,4 +1,5 @@
 #import <Cocoa/Cocoa.h>
+#include <string>
 #include "Mouse.hpp"
 
 void Mouse::mmsetCursor(void* cursorPtr) {

@@ -47,7 +47,7 @@ void Mouse::setCursorForDirection(MouseDrag::Direction dir)
     SetCursor(cursor ? cursor : m_cursorCache[MouseDrag::DEFAULT]);
 }
 
-#elif defined(GEODE_IS_MACOS)
+#elif defined(IAMAPPLE)
 std::array<void*, 6> m_cursorCache;
 void Mouse::setupCache() {
 	m_cursorCache[MouseDrag::UP]    =  mmloadCursor(geode::prelude::Mod::get()->getResourcesDir() / "up.png");

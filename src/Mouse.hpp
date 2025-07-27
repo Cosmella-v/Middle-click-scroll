@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 
 namespace MouseDrag {
     enum Direction
@@ -31,7 +32,7 @@ public:
     bool m_windowActive = true;
     static Mouse* get();
 private:
-    #ifdef GEODE_IS_MACOS
+    #ifdef IAMAPPLE
         void* mmloadCursor(const std::string& imagePath);
         void mmsetCursor(void* cursorPtr);
         void* mmDefaultCursor();
