@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="21.424999"
+   height="21.424999"
+   viewBox="0 0 5.6686976 5.6686977"
+   version="1.1"
+   id="svg1"
+   inkscape:export-filename="all-directions.png"
+   inkscape:export-xdpi="573.52386"
+   inkscape:export-ydpi="573.52386"
+   inkscape:version="1.4 (86a8ad7, 2024-10-11)"
+   sodipodi:docname="all-directions.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showguides="false"
+     inkscape:zoom="23.005387"
+     inkscape:cx="10.06286"
+     inkscape:cy="14.14886"
+     inkscape:window-width="1920"
+     inkscape:window-height="1009"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g4" />
+  <defs
+     id="defs1">
+    <filter
+       style="color-interpolation-filters:sRGB"
+       inkscape:label="Drop Shadow"
+       id="filter58"
+       x="-0.041070184"
+       y="-0.041068846"
+       width="1.1037362"
+       height="1.1037349">
+      <feFlood
+         result="flood"
+         in="SourceGraphic"
+         flood-opacity="0.498039"
+         flood-color="rgb(128,128,128)"
+         id="feFlood57" />
+      <feGaussianBlur
+         result="blur"
+         in="SourceGraphic"
+         stdDeviation="0.200000"
+         id="feGaussianBlur57" />
+      <feOffset
+         result="offset"
+         in="blur"
+         dx="0.400000"
+         dy="0.400000"
+         id="feOffset57" />
+      <feComposite
+         result="comp1"
+         operator="in"
+         in="flood"
+         in2="offset"
+         id="feComposite57" />
+      <feComposite
+         result="comp2"
+         operator="over"
+         in="SourceGraphic"
+         in2="comp1"
+         id="feComposite58" />
+    </filter>
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g4"
+       style="fill:#000000;fill-opacity:1;stroke:#818181;stroke-opacity:1;filter:url(#filter58)"
+       transform="matrix(0.27730919,0,0,0.27730919,0.57780691,0.02750206)"
+       inkscape:label="all-directions">
+      <path
+         id="path2"
+         style="fill:#000000;fill-opacity:1;stroke:#ffffff;stroke-width:0.396875;stroke-dasharray:none;stroke-opacity:1"
+         d="M 7.9375002,19.182383 C 6.6145835,17.859466 5.291667,16.53655 3.96875,15.213632 h 7.9375 z"
+         sodipodi:nodetypes="cccc" />
+      <path
+         id="rect1"
+         style="fill:#000000;fill-opacity:1;stroke:#ffffff;stroke-width:0.396875;stroke-dasharray:none;stroke-opacity:1"
+         d="M 7.9375,0.66145827 C 9.2604167,1.984375 10.583333,3.3072916 11.90625,4.6302083 h -7.9375 z"
+         sodipodi:nodetypes="cccc" />
+      <path
+         id="path7"
+         style="fill:#000000;fill-opacity:1;stroke:#ffffff;stroke-width:0.396875;stroke-dasharray:none;stroke-opacity:1"
+         d="M 17.197962,9.9219205 C 15.875045,11.244837 14.552129,12.567754 13.229211,13.890671 V 5.9531707 Z"
+         sodipodi:nodetypes="cccc" />
+      <path
+         id="path8"
+         style="fill:#000000;fill-opacity:1;stroke:#ffffff;stroke-width:0.39691;stroke-dasharray:none;stroke-opacity:1"
+         d="M -1.3229623,9.9219207 C -4.5668714e-5,8.599004 1.322871,7.2760877 2.6457877,5.9531707 v 7.9375003 z"
+         sodipodi:nodetypes="cccc" />
+      <circle
+         style="fill:#000000;fill-opacity:1;stroke:#ffffff;stroke-width:0.396932;stroke-dasharray:none;stroke-opacity:1"
+         id="path56"
+         cx="7.9375"
+         cy="9.9219208"
+         r="1.9062996" />
+    </g>
+  </g>
+</svg>

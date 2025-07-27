@@ -50,11 +50,12 @@ void Mouse::setCursorForDirection(MouseDrag::Direction dir)
 #elif defined(__APPLE__)
 std::array<void*, 6> m_cursorCache;
 void Mouse::setupCache() {
-	m_cursorCache[MouseDrag::UP]    =  mmloadCursor(geode::prelude::Mod::get()->getResourcesDir() / "up.png");
-	m_cursorCache[MouseDrag::DOWN]  =  mmloadCursor(geode::prelude::Mod::get()->getResourcesDir() / "down.png");
-	m_cursorCache[MouseDrag::RIGHT] =  mmloadCursor(geode::prelude::Mod::get()->getResourcesDir() / "right.png");
-	m_cursorCache[MouseDrag::LEFT]  =  mmloadCursor(geode::prelude::Mod::get()->getResourcesDir() / "left.png");
-	m_cursorCache[MouseDrag::ALL]   = mmloadCursor(geode::prelude::Mod::get()->getResourcesDir() / "all.png");
+	auto ModResources = geode::prelude::Mod::get()->getResourcesDir();
+	m_cursorCache[MouseDrag::UP]    =  mmloadCursor(ModResources/ "up.png",ModResources/ "up@32.png",ModResources/ "up@128.png");
+	m_cursorCache[MouseDrag::DOWN]  =  mmloadCursor(ModResources/ "down.png",ModResources/ "down@32.png",ModResources/ "down@128.png");
+	m_cursorCache[MouseDrag::RIGHT] =  mmloadCursor(ModResources/ "right.png",ModResources/ "right@32.png",ModResources/ "right@128.png");
+	m_cursorCache[MouseDrag::LEFT]  =  mmloadCursor(ModResources/ "left.png",ModResources/ "left@32.png",ModResources/ "left@128.png");
+	m_cursorCache[MouseDrag::ALL]   = mmloadCursor(ModResources/ "all.png",ModResources/ "all@32.png",ModResources/ "all@128.png");
 	m_cursorCache[MouseDrag::DEFAULT]  = mmDefaultCursor();
 }
 

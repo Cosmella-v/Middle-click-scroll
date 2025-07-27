@@ -2,14 +2,14 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="21.424999"
-   height="21.424999"
-   viewBox="0 0 5.6686976 5.6686977"
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
    version="1.1"
    id="svg1"
    inkscape:export-filename="all-directions.png"
-   inkscape:export-xdpi="573.52386"
-   inkscape:export-ydpi="573.52386"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
    inkscape:version="1.4 (86a8ad7, 2024-10-11)"
    sodipodi:docname="all-directions.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
@@ -27,22 +27,22 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
      showguides="false"
-     inkscape:zoom="8.1336326"
-     inkscape:cx="-3.9957546"
-     inkscape:cy="35.224114"
+     inkscape:zoom="32.53453"
+     inkscape:cx="23.405901"
+     inkscape:cy="25.034939"
      inkscape:window-width="1920"
      inkscape:window-height="1009"
      inkscape:window-x="-8"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
-     inkscape:current-layer="layer1" />
+     inkscape:current-layer="g4" />
   <defs
      id="defs1">
     <filter
-       style="color-interpolation-filters:sRGB"
+       style="color-interpolation-filters:sRGB;"
        inkscape:label="Drop Shadow"
        id="filter58"
-       x="-0.041070184"
+       x="-0.041070167"
        y="-0.041068846"
        width="1.1037362"
        height="1.1037349">
@@ -84,7 +84,7 @@
     <g
        id="g4"
        style="fill:#000000;fill-opacity:1;stroke:#818181;stroke-opacity:1;filter:url(#filter58)"
-       transform="matrix(0.27730919,0,0,0.27730919,0.57780691,0.02750206)"
+       transform="matrix(0.27730919,0,0,0.27730919,4.4134417,3.8631436)"
        inkscape:label="all-directions">
       <path
          id="path2"
@@ -103,7 +103,7 @@
          sodipodi:nodetypes="cccc" />
       <path
          id="path8"
-         style="fill:#000000;fill-opacity:1;stroke:#ffffff;stroke-width:0.39691;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:#000000;fill-opacity:1;stroke:#ffffff;stroke-width:0.39690955;stroke-dasharray:none;stroke-opacity:1"
          d="M -1.3229623,9.9219207 C -4.5668714e-5,8.599004 1.322871,7.2760877 2.6457877,5.9531707 v 7.9375003 z"
          sodipodi:nodetypes="cccc" />
       <circle
