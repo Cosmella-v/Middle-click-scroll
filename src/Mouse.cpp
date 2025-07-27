@@ -48,7 +48,6 @@ void Mouse::setCursorForDirection(MouseDrag::Direction dir)
 }
 
 #elif defined(__APPLE__)
-#pragma message("Compiling macos")
 std::array<void*, 6> m_cursorCache;
 void Mouse::setupCache() {
 	m_cursorCache[MouseDrag::UP]    =  mmloadCursor(geode::prelude::Mod::get()->getResourcesDir() / "up.png");
