@@ -33,7 +33,7 @@ public:
     static Mouse* get();
 private:
     #ifdef __APPLE__
-        void* mmloadCursor(const std::string& imagePath);
+        void* mmloadCursor(const std::string& imagePath32, const std::string& imagePath64, const std::string& imagePath128);
         void mmsetCursor(void* cursorPtr);
         void* mmDefaultCursor();
     #endif
