@@ -2,12 +2,8 @@
 
 #ifdef GEODE_IS_WINDOWS
 #include <windows.h>
-#else
-#ifdef GEODE_IS_MACOS
-#ifdef GEODE_IS_MACOS
+#elif defined(GEODE_IS_MACOS)
 #include <CoreGraphics/CGEventSource.h>
-#endif
-#endif
 #endif
 
 Mouse* UMouse = new Mouse;
@@ -15,22 +11,23 @@ Mouse* UMouse = new Mouse;
 Mouse* Mouse::get() {
     return UMouse;
 };
-Mouse *Mouse::get()
-{
-	return UMouse;
-};
 
-bool Mouse::isMiddleClickPressed()
+MouseDrag::MouseKeys Mouse::updateMouseKeys()
 {
-    #ifdef GEODE_IS_WINDOWS
-        return (GetAsyncKeyState(VK_MBUTTON) & 0x8000);
-    #else
-    #ifdef GEODE_IS_MACOS
-        return CGEventSourceButtonState(kCGEventSourceStateHIDSystemState, kCGMouseButtonCenter);
-    #else
-        return false;
-    #endif
-    #endif
+	#ifdef GEODE_IS_WINDOWS
+		m_mouseKeys.MiddleClick = (GetAsyncKeyState(VK_MBUTTON) & 0x8000);
+		m_mouseKeys.LeftClick   = (GetAsyncKeyState(VK_LBUTTON) & 0x8000);
+		m_mouseKeys.RightClick  = (GetAsyncKeyState(VK_RBUTTON) & 0x8000);
+	#elif defined(GEODE_IS_MACOS)
+		m_mouseKeys.MiddleClick = CGEventSourceButtonState(kCGEventSourceStateHIDSystemState, kCGMouseButtonCenter);
+		m_mouseKeys.LeftClick   = CGEventSourceButtonState(kCGEventSourceStateHIDSystemState, kCGMouseButtonLeft);
+		m_mouseKeys.RightClick  = CGEventSourceButtonState(kCGEventSourceStateHIDSystemState, kCGMouseButtonRight);
+	#else
+		m_mouseKeys.MiddleClick = false;
+		m_mouseKeys.LeftClick   = false;
+		m_mouseKeys.RightClick  = false;
+	#endif
+	return m_mouseKeys;
 }
 
 #ifdef GEODE_IS_WINDOWS
@@ -72,11 +69,10 @@ void Mouse::setCursorForDirection(MouseDrag::Direction dir)
 void Mouse::resetCursor()
 {
     return;
+}
 void Mouse::setupCache() {
 
 }
-void Mouse::setCursorForDirection(MouseDrag::Direction dir) {
-    return;
 void Mouse::setCursorForDirection(MouseDrag::Direction dir)
 {
 	m_direction = dir;
@@ -89,5 +85,5 @@ void Mouse::resetCursor()
 };
 
 MouseDrag::Direction Mouse::getDirection() {
-	return m_direction
+	return m_direction;
 };

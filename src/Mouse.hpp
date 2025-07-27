@@ -10,6 +10,11 @@ namespace MouseDrag {
         LEFT,
         RIGHT
     };
+    struct MouseKeys {
+        bool LeftClick = false;
+        bool RightClick = false;
+        bool MiddleClick = false;
+    };
 }
 
 class Mouse {
@@ -17,7 +22,7 @@ public:
     Mouse() {
         setupCache();
     };
-    bool isMiddleClickPressed();
+    MouseDrag::MouseKeys updateMouseKeys();
     void setCursorForDirection(MouseDrag::Direction dir);
     MouseDrag::Direction getDirection();
     void resetCursor();
@@ -32,5 +37,6 @@ private:
         void* mmDefaultCursor();
     #endif
     void setupCache();
+    MouseDrag::MouseKeys m_mouseKeys;
     MouseDrag::Direction m_direction;
 };

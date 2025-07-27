@@ -7,6 +7,16 @@ using namespace geode::prelude;
 
 Mouse* UserMouse = Mouse::get();
 
+#define setting(flag,name,type) flag = Mod::get()->getSettingValue<type>(name); \
+	listenForSettingChanges<type>(name, [](type newer) { \
+		flag = newer; \
+	});
+
+$on_mod(Loaded) {
+	setting(UserMouse->m_maxSpeed,"max-scroll-speed",double);
+	setting(UserMouse->m_scrollSpeedFactor,"scroll-speed-mult",double);
+}
+
 // both classes use this :troll:
 template <typename Derived, typename Base>
 struct MouseScrollClass : Modify<Derived, Base> {
@@ -15,7 +25,7 @@ struct MouseScrollClass : Modify<Derived, Base> {
         bool m_movement = false;
         CCPoint m_clickPos;
         CCPoint m_velocity;
-        bool m_currentInput = false;
+        MouseDrag::MouseKeys m_inputs;
     };
 
     void forceScrollUpdate(float) {
@@ -28,20 +38,32 @@ struct MouseScrollClass : Modify<Derived, Base> {
             if (this->m_disableMovement) return;
         }
 
-        bool MiddleClickInput = UserMouse->isMiddleClickPressed();
+        MouseDrag::MouseKeys inputs = UserMouse->updateMouseKeys();
+		
+		if (inputs.RightClick != this->m_fields->m_inputs.RightClick || inputs.LeftClick != this->m_fields->m_inputs.LeftClick) { 
+			this->m_fields->m_inputs.RightClick = inputs.RightClick;
+			this->m_fields->m_inputs.LeftClick = inputs.LeftClick;
+            this->m_fields->m_movement = false;
+            this->m_fields->m_scrolling = false;
+            UserMouse->resetCursor();
+			return;
+		}
         CCPoint mousePos = getMousePos();
+        if (inputs.MiddleClick != this->m_fields->m_inputs.MiddleClick) {
+            this->m_fields->m_inputs.MiddleClick = inputs.MiddleClick;
 
-        if (MiddleClickInput != this->m_fields->m_currentInput) {
-            this->m_fields->m_currentInput = MiddleClickInput;
-
-            if (MiddleClickInput || this->m_fields->m_movement) {
+            if (inputs.MiddleClick || this->m_fields->m_movement) {
                 if (!this->m_fields->m_scrolling) {
                     if (!positionOverlaps(mousePos)) return;
 
+					this->m_fields->m_inputs.RightClick = inputs.RightClick;
+					this->m_fields->m_inputs.LeftClick = inputs.LeftClick;
                     this->m_fields->m_scrolling = true;
                     this->m_fields->m_clickPos = mousePos;
                     this->m_fields->m_velocity = CCPointZero;
                 } else {
+					this->m_fields->m_inputs.RightClick = inputs.RightClick;
+					this->m_fields->m_inputs.LeftClick = inputs.LeftClick;
                     this->m_fields->m_movement = false;
                     this->m_fields->m_scrolling = false;
                     UserMouse->resetCursor();
