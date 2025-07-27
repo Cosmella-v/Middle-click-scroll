@@ -8,19 +8,35 @@ Mouse* mouse = Mouse::get();
 class $modify(MyAppDelegate, AppDelegate) {
 	
 	void applicationWillResignActive() {
-        mouse->m_windowActive = false;
+        if (mouse) {
+            mouse->m_windowActive = false;
+        } else {
+            mouse = Mouse::get();
+        }
 		AppDelegate::applicationWillResignActive();
 	}
 	void applicationDidEnterBackground() {
-        mouse->m_windowActive = false;
+        if (mouse) {
+            mouse->m_windowActive = false;
+        } else {
+            mouse = Mouse::get();
+        }
 		AppDelegate::applicationDidEnterBackground();
 	}
     void applicationWillBecomeActive() {
-        mouse->m_windowActive = true;
+        if (mouse) {
+            mouse->m_windowActive = true;
+        } else {
+            mouse = Mouse::get();
+        }
         AppDelegate::applicationWillBecomeActive();
     }
     void applicationWillEnterForeground() {
-        mouse->m_windowActive = true;
+        if (mouse) {
+            mouse->m_windowActive = true;
+        } else {
+            mouse = Mouse::get();
+        }
         AppDelegate::applicationWillEnterForeground();
     }
 };
