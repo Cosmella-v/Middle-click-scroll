@@ -15,12 +15,10 @@ Mouse* Mouse::get() {
 MouseDrag::MouseKeys Mouse::updateMouseKeys()
 {
 	#ifdef GEODE_IS_WINDOWS
-		#pragma message("Compiling windows")
 		m_mouseKeys.MiddleClick = (GetAsyncKeyState(VK_MBUTTON) & 0x8000);
 		m_mouseKeys.LeftClick   = (GetAsyncKeyState(VK_LBUTTON) & 0x8000);
 		m_mouseKeys.RightClick  = (GetAsyncKeyState(VK_RBUTTON) & 0x8000);
 	#elif defined(GEODE_IS_MACOS)
-		#pragma message("Compiling macos")
 		m_mouseKeys.MiddleClick = CGEventSourceButtonState(kCGEventSourceStateHIDSystemState, kCGMouseButtonCenter);
 		m_mouseKeys.LeftClick   = CGEventSourceButtonState(kCGEventSourceStateHIDSystemState, kCGMouseButtonLeft);
 		m_mouseKeys.RightClick  = CGEventSourceButtonState(kCGEventSourceStateHIDSystemState, kCGMouseButtonRight);
@@ -49,7 +47,8 @@ void Mouse::setCursorForDirection(MouseDrag::Direction dir)
     SetCursor(cursor ? cursor : m_cursorCache[MouseDrag::DEFAULT]);
 }
 
-#elif defined(IAMAPPLE)
+#elif defined(__APPLE__)
+#pragma message("Compiling macos")
 std::array<void*, 6> m_cursorCache;
 void Mouse::setupCache() {
 	m_cursorCache[MouseDrag::UP]    =  mmloadCursor(geode::prelude::Mod::get()->getResourcesDir() / "up.png");
